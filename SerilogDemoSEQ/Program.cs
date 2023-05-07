@@ -13,8 +13,8 @@ builder.Services.AddSwaggerGen();
 builder.Host.UseSerilog();
 
 var config = builder.Configuration.AddJsonFile("appsettings.json").Build();
-//var seriConfigDTO = new SeriConfigDTO();
-//config.GetSection("Serilog").Bind(seriConfigDTO);
+var seriConfigDTO = new SeriConfigDTO();
+config.GetSection("Serilog").Bind(seriConfigDTO);
 
 //Log.Logger = new LoggerConfiguration().ReadFrom.Configuration(config).CreateLogger();
 //Log.Logger = new LoggerConfiguration().ReadFrom.Configuration(config).WriteTo.Seq("http://localhost:8088").CreateLogger();
@@ -27,14 +27,27 @@ var config = builder.Configuration.AddJsonFile("appsettings.json").Build();
 //                .ReadFrom.Configuration(config)
 //                .WriteTo.File(config["SerilogPath"], rollingInterval: RollingInterval.Day).CreateLogger();
 
-Log.Logger = new LoggerConfiguration()
-    .WriteTo.Console()
-    .WriteTo.File("C:\\Logs\\SerilogDemoSEQ\\AppLogs\\log-.txt", rollingInterval: RollingInterval.Day).WriteTo.Seq("http://localhost:8088", Serilog.Events.LogEventLevel.Information)
+//SINGLE FILE, SINGLE ENTRY ON SEQ......ADDS JARGONS
+//Log.Logger = new LoggerConfiguration()
+//    .WriteTo.Console()
+//    .WriteTo.File("C:\\Logs\\SerilogDemoSEQ\\AppLogs\\log-.txt", rollingInterval: RollingInterval.Day,).WriteTo.Seq("http://localhost:8088", Serilog.Events.LogEventLevel.Information)
+//    .CreateLogger();
+//    .CreateLogger();
+
+//DOUBLE FILES, SINGLE ENTRY ON SEQ......NO JARGONS
+Log.Logger = new LoggerConfiguration().ReadFrom.Configuration(config)
+    .WriteTo.File("C:\\Logs\\SerilogDemoSEQ\\AppLogs\\log-.txt", rollingInterval: RollingInterval.Day)
     .CreateLogger();
+
+//SINGLE FILE, NO ENTRY ON SEQ......ADDS JARGONS 
+//Log.Logger = new LoggerConfiguration()
+//    .WriteTo.File("C:\\Logs\\SerilogDemoSEQ\\AppLogs\\log-.txt", rollingInterval: RollingInterval.Day)
+//    .CreateLogger();
 
 try
 {
     Log.Information("SeriloggDemoSEQ - Application Starting Up");
+    var txtx = seriConfigDTO.WriteTo[9].Args.path;
     var app = builder.Build();
 
     // Configure the HTTP request pipeline.
