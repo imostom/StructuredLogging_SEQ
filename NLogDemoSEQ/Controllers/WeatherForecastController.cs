@@ -26,7 +26,7 @@ namespace NLogDemoSEQ.Controllers
         {
             _logger.LogInformation($"NLogDemoSEQ1 - New Request Received");
             logger.Info($"NLogDemoSEQ - New Request Received");
-            //logger.Error($"NLogDemoSEQ Error - New Request Received");
+            logger.Error($"NLogDemoSEQ Error - New Request Received");
             var data = Enumerable.Range(1, 100).Select(index => new WeatherForecast
             {
                 Date = DateTime.Now.AddDays(index),
