@@ -1,5 +1,6 @@
 using Microsoft.Extensions.Logging.Configuration;
 using Serilog;
+using Serilog.Formatting.Json;
 using SerilogDemoSEQ;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -16,38 +17,38 @@ var config = builder.Configuration.AddJsonFile("appsettings.json").Build();
 var seriConfigDTO = new SeriConfigDTO();
 config.GetSection("Serilog").Bind(seriConfigDTO);
 
-//Log.Logger = new LoggerConfiguration().ReadFrom.Configuration(config).CreateLogger();
-//Log.Logger = new LoggerConfiguration().ReadFrom.Configuration(config).WriteTo.Seq("http://localhost:8088").CreateLogger();
-//Log.Logger = new LoggerConfiguration().WriteTo.Seq("http://localhost:8088", Serilog.Events.LogEventLevel.Information).CreateLogger();
-//Log.Logger = new LoggerConfiguration().WriteTo.File(@"C:\Logs\SerilogDemoSEQ\AppLogs\log.txt", rollingInterval: RollingInterval.Day).CreateLogger();
-//Log.Logger = new LoggerConfiguration().WriteTo.File(config["SerilogPath"], rollingInterval: RollingInterval.Day, rollOnFileSizeLimit: true, fileSizeLimitBytes: 123456).CreateLogger();
-//Log.Logger = new LoggerConfiguration().WriteTo.File(seriConfigDTO.WriteTo[1].Args.path, rollingInterval: RollingInterval.Day).CreateLogger();
-//Log.Logger = new LoggerConfiguration().MinimumLevel.Override("Warning", Serilog.Events.LogEventLevel.Information).WriteTo.File(seriConfigDTO.WriteTo[1].Args.path, rollingInterval: RollingInterval.Day).CreateLogger();
-//Log.Logger = new LoggerConfiguration().MinimumLevel.Information()
-//                .ReadFrom.Configuration(config)
-//                .WriteTo.File(config["SerilogPath"], rollingInterval: RollingInterval.Day).CreateLogger();
-
+#region
 //SINGLE FILE, SINGLE ENTRY ON SEQ......ADDS JARGONS
 //Log.Logger = new LoggerConfiguration()
 //    .WriteTo.Console()
 //    .WriteTo.File("C:\\Logs\\SerilogDemoSEQ\\AppLogs\\log-.txt", rollingInterval: RollingInterval.Day,).WriteTo.Seq("http://localhost:8088", Serilog.Events.LogEventLevel.Information)
 //    .CreateLogger();
 //    .CreateLogger();
+#endregion
 
-//DOUBLE FILES, SINGLE ENTRY ON SEQ......NO JARGONS
-Log.Logger = new LoggerConfiguration().ReadFrom.Configuration(config)
-    .WriteTo.File("C:\\Logs\\SerilogDemoSEQ\\AppLogs\\log-.txt", rollingInterval: RollingInterval.Day)
+Log.Logger = new LoggerConfiguration()
+    .ReadFrom.Configuration(config)
     .CreateLogger();
 
-//SINGLE FILE, NO ENTRY ON SEQ......ADDS JARGONS 
+//DOUBLE FILES, SINGLE ENTRY ON SEQ......NO JARGONS
+//Log.Logger = new LoggerConfiguration().ReadFrom.Configuration(config)
+//    .WriteTo.File(seriConfigDTO.WriteTo[1].Args.path, rollingInterval: RollingInterval.Day, rollOnFileSizeLimit: true, fileSizeLimitBytes: 52428800)
+//    .WriteTo.File(new JsonFormatter(), seriConfigDTO.WriteTo[2].Args.path, rollingInterval: RollingInterval.Day, rollOnFileSizeLimit: true, fileSizeLimitBytes: 52428800)
+//    //.WriteTo.File("C:\\Logs\\SEQ\\SerilogDemoSEQ\\log-.txt", rollingInterval: RollingInterval.Day)
+//    .WriteTo.Seq("http://localhost:5341")
+//    .CreateLogger();
+
+//SINGLE FILE, ENTRY ON SEQ, JSON FILE ISN'T RIGHT.....ADDS JARGONS 
 //Log.Logger = new LoggerConfiguration()
-//    .WriteTo.File("C:\\Logs\\SerilogDemoSEQ\\AppLogs\\log-.txt", rollingInterval: RollingInterval.Day)
+//    .WriteTo.File(seriConfigDTO.WriteTo[1].Args.path, rollingInterval: RollingInterval.Day, rollOnFileSizeLimit: true, fileSizeLimitBytes: 52428800)
+//    .WriteTo.File(seriConfigDTO.WriteTo[2].Args.path, rollingInterval: RollingInterval.Day, rollOnFileSizeLimit: true, fileSizeLimitBytes: 52428800)
+//    .WriteTo.Seq("http://localhost:5341")
 //    .CreateLogger();
 
 try
 {
     Log.Information("SeriloggDemoSEQ - Application Starting Up");
-    var txtx = seriConfigDTO.WriteTo[9].Args.path;
+    var txtx = seriConfigDTO.WriteTo[3].Args.path;
     var app = builder.Build();
 
     // Configure the HTTP request pipeline.
